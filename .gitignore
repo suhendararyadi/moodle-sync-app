@@ -1,0 +1,18 @@
+# Build outputs
+publish/
+src/*/bin/
+src/*/obj/
+
+# Local SQLite databases (contain real data)
+*.db
+*.db-shm
+*.db-wal
+
+# Moodle sync config (contains tokens/passwords)
+webapps/eujian-sync/config.json
+
+# Installer binary components (laragon, moodle installer - too large)
+installer/components/
+
+# macOS
+.DS_Store

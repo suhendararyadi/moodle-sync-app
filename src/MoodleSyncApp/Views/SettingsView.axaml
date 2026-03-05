@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MoodleSyncApp.ViewModels"
+             x:Class="MoodleSyncApp.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="16">
+
+            <TextBlock Text="⚙️ Pengaturan Koneksi" FontSize="18" FontWeight="Bold"/>
+            <Separator/>
+
+            <!-- Server Utama -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="🌐 Server Utama (Master)" FontWeight="SemiBold" FontSize="14"/>
+
+                    <TextBlock Text="URL Server:" FontSize="12" Foreground="#555"/>
+                    <TextBox Text="{Binding MasterUrl}"
+                             Watermark="http://192.168.1.1/moodle"/>
+
+                    <TextBlock Text="API Token:" FontSize="12" Foreground="#555"/>
+                    <TextBox Text="{Binding MasterToken}"
+                             PasswordChar="•"
+                             Watermark="Token dari Moodle → Web Services"/>
+
+                    <Button Content="🔍  Test Koneksi Master"
+                            Command="{Binding TestMasterCommand}"/>
+                    <TextBlock Text="{Binding MasterTestResult}"
+                               FontSize="12" Foreground="{Binding MasterTestColor}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Server Lokal -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="🖥️ Server Lokal (Kelas)" FontWeight="SemiBold" FontSize="14"/>
+
+                    <TextBlock Text="URL Server:" FontSize="12" Foreground="#555"/>
+                    <TextBox Text="{Binding LocalUrl}"
+                             Watermark="http://localhost/moodle"/>
+
+                    <TextBlock Text="API Token:" FontSize="12" Foreground="#555"/>
+                    <TextBox Text="{Binding LocalToken}"
+                             PasswordChar="•"/>
+
+                    <Button Content="🔍  Test Koneksi Lokal"
+                            Command="{Binding TestLocalCommand}"/>
+                    <TextBlock Text="{Binding LocalTestResult}"
+                               FontSize="12" Foreground="{Binding LocalTestColor}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Identitas Ruangan -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="🏷️ Identitas Ruangan" FontWeight="SemiBold" FontSize="14"/>
+
+                    <TextBlock Text="Room ID (untuk identifikasi data):" FontSize="12" Foreground="#555"/>
+                    <TextBox Text="{Binding RoomId}" Watermark="Contoh: ROOM_01"/>
+
+                    <TextBlock Text="Nama Ruangan:" FontSize="12" Foreground="#555"/>
+                    <TextBox Text="{Binding RoomName}" Watermark="Contoh: Ruang Lab Komputer 1"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Simpan -->
+            <Button Content="💾  Simpan Pengaturan"
+                    Command="{Binding SaveCommand}"
+                    Background="#2E7D32" Foreground="White"
+                    Padding="20,12" HorizontalAlignment="Right"/>
+
+            <TextBlock Text="{Binding SaveMessage}"
+                       FontSize="12" Foreground="{Binding SaveMessageColor}"
+                       HorizontalAlignment="Right"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

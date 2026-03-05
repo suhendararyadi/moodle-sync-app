@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MoodleSyncApp.ViewModels"
+             x:Class="MoodleSyncApp.Views.BackupView"
+             x:DataType="vm:BackupViewModel">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="16">
+
+            <TextBlock Text="💾 Backup Lokal" FontSize="18" FontWeight="Bold"/>
+            <Separator/>
+
+            <!-- ── Panel Backup Manual ──────────────────────────────────────── -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="🗄️ Backup Database" FontWeight="SemiBold" FontSize="14"/>
+
+                    <!-- Opsi -->
+                    <CheckBox Content="Sertakan folder moodledata (file upload, lebih besar)"
+                              IsChecked="{Binding IncludeDataDir}"/>
+
+                    <!-- Lokasi backup -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="📁 Lokasi:" FontSize="12" Foreground="#555"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding BackupPath}" FontSize="12"
+                                   Foreground="#1565C0" VerticalAlignment="Center"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Progress bar -->
+                    <ProgressBar Value="{Binding ProgressValue}" Minimum="0" Maximum="100"
+                                 Height="8" CornerRadius="4"/>
+
+                    <TextBlock Text="{Binding ProgressMessage}"
+                               FontSize="12" Foreground="{Binding StatusColor}"/>
+
+                    <!-- Tombol Aksi -->
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="💾  Backup Sekarang"
+                                Command="{Binding BackupNowCommand}"
+                                IsEnabled="{Binding !IsBusy}"
+                                Background="#1565C0" Foreground="White"
+                                Padding="16,10"/>
+
+                        <Button Content="📂  Buka Folder Backup"
+                                Command="{Binding OpenBackupFolderCommand}"
+                                Padding="12,10"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ── Auto-Backup ──────────────────────────────────────────────── -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="⏰ Auto-Backup Otomatis" FontWeight="SemiBold" FontSize="14"/>
+
+                    <Grid ColumnDefinitions="Auto,16,*">
+                        <TextBlock Text="Interval (jam):" FontSize="12"
+                                   VerticalAlignment="Center"/>
+                        <NumericUpDown Grid.Column="2"
+                                       Value="{Binding AutoIntervalHours}"
+                                       Minimum="1" Maximum="24" Increment="1"
+                                       Width="100" HorizontalAlignment="Left"/>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ToggleButton Content="{Binding AutoStatusText}"
+                                      IsChecked="{Binding AutoBackupEnabled}"
+                                      Command="{Binding ToggleAutoBackupCommand}"
+                                      Padding="14,10"/>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding NextBackupText}"
+                               FontSize="12" Foreground="#555"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ── Daftar Backup ────────────────────────────────────────────── -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="📋 Daftar Backup" FontWeight="SemiBold" FontSize="14"/>
+                        <Button Grid.Column="1" Content="🔄 Refresh"
+                                Command="{Binding RefreshCommand}"
+                                FontSize="12" Padding="10,6"/>
+                    </Grid>
+
+                    <!-- List backup files -->
+                    <ListBox ItemsSource="{Binding BackupList}"
+                             SelectedItem="{Binding SelectedBackup}"
+                             MaxHeight="200"
+                             Background="#FAFAFA" BorderBrush="#E0E0E0" BorderThickness="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,Auto,Auto" Margin="4,2">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding FileName}"
+                                                   FontSize="12" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding DateDisplay}"
+                                                   FontSize="11" Foreground="#888"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding SizeDisplay}"
+                                               FontSize="12" Foreground="#1565C0"
+                                               VerticalAlignment="Center"
+                                               Margin="12,0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Hapus terpilih -->
+                    <Button Content="🗑️  Hapus Backup Terpilih"
+                            Command="{Binding DeleteSelectedCommand}"
+                            IsEnabled="{Binding SelectedBackup, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Background="#C62828" Foreground="White"
+                            Padding="12,8" HorizontalAlignment="Left"/>
+
+                    <TextBlock FontSize="11" Foreground="#9E9E9E"
+                               Text="Catatan: 10 backup terbaru disimpan secara otomatis."/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MoodleSyncApp.ViewModels"
+             x:Class="MoodleSyncApp.Views.UploadView"
+             x:DataType="vm:UploadViewModel">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="16">
+
+            <TextBlock Text="📤 Upload Hasil Ujian ke Server Utama"
+                       FontSize="18" FontWeight="Bold"/>
+            <TextBlock Text="Export hasil ujian dari server lokal dan kirim ke server utama."
+                       Foreground="#666" FontSize="13"/>
+            <Separator/>
+
+            <!-- Step 1: Export -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Step 1: Export Hasil dari Server Lokal"
+                               FontWeight="SemiBold" FontSize="14"/>
+                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Quiz ID:"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Grid.Row="0" Grid.Column="1"
+                                 Text="{Binding QuizId}" Watermark="ID quiz di Moodle lokal"/>
+                        <Button Grid.Row="0" Grid.Column="2" Content="📥 Export"
+                                Command="{Binding ExportCommand}"
+                                Background="#1565C0" Foreground="White"
+                                Padding="16,8" Margin="8,0,0,0"/>
+                    </Grid>
+                    <TextBlock Text="{Binding ExportResult}"
+                               FontSize="12" Foreground="{Binding ExportResultColor}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Step 2: Upload -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Step 2: Upload ke Server Utama"
+                               FontWeight="SemiBold" FontSize="14"/>
+                    <TextBlock Text="File hasil export akan dikirim ke server master."
+                               Foreground="#666" FontSize="12"/>
+
+                    <ListBox ItemsSource="{Binding ExportedFiles}"
+                             SelectedItem="{Binding SelectedFile}"
+                             MaxHeight="120">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontSize="12"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Button Content="📤 Upload File Terpilih ke Master"
+                            Command="{Binding UploadCommand}"
+                            IsEnabled="{Binding SelectedFile, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Background="#2E7D32" Foreground="White"
+                            Padding="16,10"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Progress -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="16" IsVisible="{Binding IsWorking}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding ProgressMessage}" FontSize="13"/>
+                    <ProgressBar Value="{Binding ProgressValue}" Maximum="100"
+                                 Height="8" CornerRadius="4" IsIndeterminate="{Binding IsIndeterminate}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Result -->
+            <Border Background="{Binding ResultBg}" BorderBrush="{Binding ResultBorder}"
+                    BorderThickness="1" CornerRadius="8" Padding="16"
+                    IsVisible="{Binding HasResult}">
+                <TextBlock Text="{Binding ResultMessage}" FontSize="13" TextWrapping="Wrap"/>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

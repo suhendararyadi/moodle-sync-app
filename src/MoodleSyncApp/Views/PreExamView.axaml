@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MoodleSyncApp.ViewModels"
+             x:Class="MoodleSyncApp.Views.PreExamView"
+             x:DataType="vm:PreExamViewModel">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="16">
+
+            <TextBlock Text="📋 Pre-Exam: Sinkronisasi Sebelum Ujian"
+                       FontSize="18" FontWeight="Bold"/>
+            <TextBlock Text="Download soal dan data siswa dari server utama ke server lokal kelas."
+                       Foreground="#666" FontSize="13"/>
+
+            <Separator/>
+
+            <!-- Step 1: Pilih Course -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Step 1: Pilih Course / Mata Pelajaran"
+                               FontWeight="SemiBold" FontSize="14"/>
+
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                        <TextBox Grid.Row="0" Grid.Column="0"
+                                 Text="{Binding CourseId}"
+                                 Watermark="Masukkan Course ID dari Moodle"
+                                 Margin="0,0,8,0"/>
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Content="Ambil Daftar Course"
+                                Command="{Binding FetchCoursesCommand}"/>
+                    </Grid>
+
+                    <ListBox ItemsSource="{Binding Courses}"
+                             SelectedItem="{Binding SelectedCourse}"
+                             MaxHeight="150">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Fullname}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+
+            <!-- Step 2: Sync Users -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Step 2: Sinkronisasi Data Siswa"
+                               FontWeight="SemiBold" FontSize="14"/>
+                    <TextBlock Text="Salin akun siswa dari server utama ke server kelas lokal."
+                               Foreground="#666" FontSize="12"/>
+
+                    <Button Content="🔄  Sync Siswa dari Server Utama"
+                            Command="{Binding SyncUsersCommand}"
+                            IsEnabled="{Binding SelectedCourse, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Background="#1565C0" Foreground="White"
+                            Padding="16,10"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Progress -->
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="8" Padding="20"
+                    IsVisible="{Binding IsSyncing}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding ProgressMessage}" FontSize="13"/>
+                    <ProgressBar Value="{Binding ProgressValue}" Maximum="100"
+                                 Height="8" CornerRadius="4"/>
+                    <TextBlock Text="{Binding ProgressValue, StringFormat='{}{0}%'}"
+                               FontSize="11" Foreground="#666"
+                               HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Result -->
+            <Border Background="{Binding ResultBg}" BorderBrush="{Binding ResultBorder}"
+                    BorderThickness="1" CornerRadius="8" Padding="16"
+                    IsVisible="{Binding HasResult}">
+                <TextBlock Text="{Binding ResultMessage}"
+                           FontSize="13" TextWrapping="Wrap"/>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

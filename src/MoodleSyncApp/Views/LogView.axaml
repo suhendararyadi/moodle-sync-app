@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MoodleSyncApp.ViewModels"
+             xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             x:Class="MoodleSyncApp.Views.LogView"
+             x:DataType="vm:LogViewModel">
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="24">
+
+        <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,12">
+            <TextBlock Text="📜 Log Aktivitas" FontSize="18" FontWeight="Bold"/>
+
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ComboBox SelectedItem="{Binding SelectedFilter}" Width="140">
+                        <ComboBoxItem>Semua</ComboBoxItem>
+                        <ComboBoxItem>Info</ComboBoxItem>
+                        <ComboBoxItem>Warning</ComboBoxItem>
+                        <ComboBoxItem>Error</ComboBoxItem>
+                        <ComboBoxItem>Success</ComboBoxItem>
+                    </ComboBox>
+                    <Button Content="🔄 Refresh" Command="{Binding RefreshCommand}"/>
+                </StackPanel>
+                <Button Grid.Column="2" Content="🗑 Hapus Log" Command="{Binding ClearCommand}"
+                        Foreground="Red" Margin="8,0"/>
+                <Button Grid.Column="3" Content="📁 Export CSV" Command="{Binding ExportCsvCommand}"/>
+            </Grid>
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0"
+                BorderThickness="1" CornerRadius="8">
+            <DataGrid ItemsSource="{Binding Logs}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Waktu" Binding="{Binding TimeText}" Width="130"/>
+                    <DataGridTextColumn Header="Level" Binding="{Binding LevelText}" Width="80"/>
+                    <DataGridTextColumn Header="Pesan" Binding="{Binding Message}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <TextBlock Grid.Row="2" Text="{Binding StatusMessage}"
+                   FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MoodleSyncApp.ViewModels"
+             xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             x:Class="MoodleSyncApp.Views.MonitorView"
+             x:DataType="vm:MonitorViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="24">
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+            <TextBlock Text="📊 Monitor Ujian Real-Time"
+                       FontSize="18" FontWeight="Bold"/>
+            <TextBlock Text="Pantau status siswa yang sedang mengerjakan ujian."
+                       Foreground="#666" FontSize="13"/>
+        </StackPanel>
+
+        <!-- Controls -->
+        <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0"
+                BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <TextBlock Text="Quiz ID:" VerticalAlignment="Center" FontSize="13"/>
+                    <TextBox Text="{Binding QuizId}" Width="100" Watermark="contoh: 5"/>
+                    <Button Content="🔄 Refresh" Command="{Binding RefreshCommand}"/>
+                    <ToggleButton Content="{Binding AutoRefreshLabel}"
+                                  IsChecked="{Binding AutoRefreshEnabled}"
+                                  Command="{Binding ToggleAutoRefreshCommand}"/>
+                </StackPanel>
+
+                <!-- Summary -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="20"
+                            VerticalAlignment="Center" Margin="16,0">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding TotalStudents}" FontSize="22"
+                                   FontWeight="Bold" Foreground="#1565C0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Total" FontSize="11" Foreground="#666"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding InProgressCount}" FontSize="22"
+                                   FontWeight="Bold" Foreground="#F57C00"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Mengerjakan" FontSize="11" Foreground="#666"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding FinishedCount}" FontSize="22"
+                                   FontWeight="Bold" Foreground="#2E7D32"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Selesai" FontSize="11" Foreground="#666"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding NotStartedCount}" FontSize="22"
+                                   FontWeight="Bold" Foreground="#C62828"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Belum Mulai" FontSize="11" Foreground="#666"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Grid.Column="2" Text="{Binding LastRefresh}"
+                           FontSize="11" Foreground="#999" VerticalAlignment="Center"
+                           Margin="16,0,0,0"/>
+            </Grid>
+        </Border>
+
+        <!-- Table -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0"
+                BorderThickness="1" CornerRadius="8">
+            <DataGrid ItemsSource="{Binding Students}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="No" Binding="{Binding No}" Width="50"/>
+                    <DataGridTextColumn Header="Nama Siswa" Binding="{Binding FullName}" Width="200"/>
+                    <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="120"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="120"/>
+                    <DataGridTextColumn Header="Mulai" Binding="{Binding StartTime}" Width="130"/>
+                    <DataGridTextColumn Header="Selesai" Binding="{Binding FinishTime}" Width="130"/>
+                    <DataGridTextColumn Header="Durasi" Binding="{Binding Duration}" Width="80"/>
+                    <DataGridTextColumn Header="Nilai" Binding="{Binding Grade}" Width="70"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Status bar -->
+        <TextBlock Grid.Row="3" Text="{Binding StatusMessage}"
+                   FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
+    </Grid>
+</UserControl>

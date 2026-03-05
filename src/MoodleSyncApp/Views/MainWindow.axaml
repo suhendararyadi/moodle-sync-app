@@ -1,0 +1,127 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MoodleSyncApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="MoodleSyncApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="E-UJIAN — SMKN 9 Garut"
+        Width="900" Height="650"
+        MinWidth="800" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ═══ HEADER ═══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="#1565C0" Padding="20,14">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Text="🏫 E-UJIAN SMKN 9 Garut" FontSize="20" FontWeight="Bold"
+                               Foreground="White"/>
+                    <TextBlock Text="{Binding RoomInfo}" FontSize="12" Foreground="#90CAF9"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- Status Koneksi -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16"
+                            VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Ellipse Width="10" Height="10"
+                                 Fill="{Binding MasterStatusColor}"/>
+                        <TextBlock Text="{Binding MasterStatusText}"
+                                   Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Ellipse Width="10" Height="10"
+                                 Fill="{Binding LocalStatusColor}"/>
+                        <TextBlock Text="{Binding LocalStatusText}"
+                                   Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                    <Button Content="🔄 Cek Koneksi"
+                            Command="{Binding CheckConnectionCommand}"
+                            FontSize="12"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ═══ MAIN CONTENT ════════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" ColumnDefinitions="200,*">
+
+            <!-- Sidebar Navigasi -->
+            <Border Grid.Column="0" Background="#E3F2FD" BorderBrush="#BBDEFB"
+                    BorderThickness="0,0,1,0">
+                <StackPanel Margin="0,10">
+                    <TextBlock Text="MENU" FontSize="11" FontWeight="Bold"
+                               Foreground="#90A4AE" Margin="16,8,16,4"/>
+
+                    <Button Content="📋  Pre-Exam Sync"
+                            Command="{Binding NavigatePreExamCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12" Margin="4,2"
+                            Background="{Binding PreExamBg}"/>
+
+                    <Button Content="📊  Monitor Ujian"
+                            Command="{Binding NavigateMonitorCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12" Margin="4,2"
+                            Background="{Binding MonitorBg}"/>
+
+                    <Button Content="📤  Upload Hasil"
+                            Command="{Binding NavigateUploadCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12" Margin="4,2"
+                            Background="{Binding UploadBg}"/>
+
+                    <Button Content="📜  Log Aktivitas"
+                            Command="{Binding NavigateLogCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12" Margin="4,2"
+                            Background="{Binding LogBg}"/>
+
+                    <Button Content="💾  Backup Lokal"
+                            Command="{Binding NavigateBackupCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12" Margin="4,2"
+                            Background="{Binding BackupBg}"/>
+
+                    <Separator Margin="16,12"/>
+
+                    <Button Content="⚙️  Pengaturan"
+                            Command="{Binding NavigateSettingsCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12" Margin="4,2"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Content Area (dinamis berdasarkan nav) -->
+            <ContentControl Grid.Column="1"
+                            Content="{Binding CurrentView}"
+                            Margin="0"/>
+        </Grid>
+
+        <!-- ═══ STATUS BAR ═══════════════════════════════════════════════════ -->
+        <Border Grid.Row="2" Background="#F5F5F5" BorderBrush="#E0E0E0"
+                BorderThickness="0,1,0,0" Padding="16,8">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontSize="12" Foreground="#616161"
+                           VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1"
+                           Text="Pengembang: Suhendar Aryadi"
+                           FontSize="11" Foreground="#BDBDBD"
+                           VerticalAlignment="Center" Margin="0,0,16,0"/>
+                <TextBlock Grid.Column="2"
+                           Text="{Binding CurrentTime}"
+                           FontSize="12" Foreground="#9E9E9E"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
