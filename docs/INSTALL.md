@@ -216,11 +216,11 @@ docker compose logs -f moodle
 
 ### Struktur Containers
 
-| Container | Image | Port |
-|---|---|---|
-| `eujian-db` | mariadb:10.11 | (internal) |
-| `eujian-moodle` | bitnami/moodle:4.3 | 8080 |
-| `eujian-sync` | php:8.2-apache (custom) | 8081 |
+| Container | Image | Port | Kredensial Default |
+|---|---|---|---|
+| `eujian-db` | mariadb:10.11 | (internal) | user: `moodle` / pass: `moodlepassword` |
+| `eujian-moodle` | bitnami/moodle:4.3 | 8080 | admin: `admin` / `Admin1234!` |
+| `eujian-sync` | php:8.2-apache (custom) | 8081 | — |
 
 ### Pasang Plugin di Moodle Docker
 
@@ -228,13 +228,41 @@ Setelah Moodle siap, pasang plugin `local_eujian`:
 
 ```bash
 # Salin plugin ke dalam container Moodle
-docker cp plugin/eujian/ eujian-moodle:/bitnami/moodle/local/eujian/
+docker cp plugin/eujian/ eujian-moodle:/var/www/html/local/eujian/
 
 # Set permission
-docker exec eujian-moodle chown -R daemon:daemon /bitnami/moodle/local/eujian/
+docker exec eujian-moodle chown -R www-data:www-data /var/www/html/local/eujian/
 
 # Jalankan upgrade
-docker exec eujian-moodle php /bitnami/moodle/admin/cli/upgrade.php --non-interactive
+docker exec eujian-moodle php /var/www/html/admin/cli/upgrade.php --non-interactive
+```
+
+Atau lewat UI Moodle: **Site Administration → Plugins → Install plugins** → upload `plugin/local_eujian.zip`
+
+### Backup & Restore Data
+
+**Backup** (simpan semua data ke folder lokal):
+```bash
+cd docker/
+./backup.sh
+# Hasil: docker/backups/YYYY-MM-DD_HH-MM/
+#   ├── database.sql.gz    (database Moodle)
+#   ├── moodledata.tar.gz  (file upload, gambar soal)
+#   └── config.json        (konfigurasi koneksi)
+```
+
+**Restore** dari backup:
+```bash
+cd docker/
+./restore.sh ./backups/2026-03-05_11-02
+```
+
+**Kloning ke server baru:**
+```bash
+# Di komputer baru, setelah git clone:
+cd docker/
+# Taruh folder backup di docker/backups/
+./clone-to-new-server.sh ./backups/2026-03-05_11-02
 ```
 
 ---

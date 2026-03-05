@@ -8,6 +8,9 @@ docker/
 ├── docker-compose.yml         # Full stack: Moodle + DB + Web App
 ├── docker-compose.simple.yml  # Simple: hanya Web App (Moodle terpisah)
 ├── .env.example               # Template environment variables
+├── backup.sh                  # Script backup data Moodle
+├── restore.sh                 # Script restore data dari backup
+├── clone-to-new-server.sh     # Helper kloning ke server baru
 └── README.md
 ```
 
@@ -52,6 +55,69 @@ Di Settings Web App, atur:
 
 ---
 
+## Backup & Restore
+
+### Kredensial Default Docker
+
+| Setting | Nilai |
+|---|---|
+| DB User | `moodle` |
+| DB Password | `moodlepassword` |
+| DB Root Password | `rootpassword` |
+| DB Name | `moodle` |
+| Moodle Admin | `admin` / `Admin1234!` |
+
+### Backup Data
+
+Jalankan script backup untuk menyimpan database + file uploads:
+
+```bash
+cd docker/
+./backup.sh
+```
+
+Hasil backup disimpan di:
+```
+docker/backups/YYYY-MM-DD_HH-MM/
+├── database.sql.gz     # Seluruh data Moodle (user, kursus, soal, nilai)
+├── moodledata.tar.gz   # File upload (gambar soal, lampiran)
+├── config.json         # Konfigurasi koneksi Web App
+└── backup-info.txt     # Metadata backup
+```
+
+> **Catatan:** Folder `backups/` tidak masuk ke Git (ada di `.gitignore`).
+
+### Restore Data
+
+```bash
+cd docker/
+./restore.sh ./backups/2026-03-05_11-02
+```
+
+### Kloning ke Komputer/Server Baru
+
+**Di komputer lama:**
+```bash
+cd docker/
+./backup.sh
+# Copy folder backups/YYYY-MM-DD_HH-MM ke USB/cloud
+```
+
+**Di komputer baru:**
+```bash
+git clone https://github.com/suhendararyadi/moodle-sync-app
+cd moodle-sync-app/docker/
+# Taruh folder backup di sini: docker/backups/YYYY-MM-DD_HH-MM/
+./clone-to-new-server.sh ./backups/2026-03-05_11-02
+```
+
+Script `clone-to-new-server.sh` akan otomatis:
+1. Menjalankan `docker compose up -d`
+2. Menunggu database siap
+3. Memanggil `restore.sh` untuk memuat semua data
+
+---
+
 ## Perintah Berguna
 
 ```bash
@@ -67,9 +133,13 @@ docker compose down
 # Reset total (hapus semua data)
 docker compose down -v
 
-# Masuk ke container
+# Masuk ke container Moodle
 docker exec -it eujian-moodle bash
 
 # Purge cache Moodle
-docker exec eujian-moodle php /bitnami/moodle/admin/cli/purge_caches.php
+docker exec eujian-moodle php /var/www/html/admin/cli/purge_caches.php
+
+# Backup manual
+cd docker/ && ./backup.sh
 ```
+

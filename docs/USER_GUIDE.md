@@ -447,6 +447,32 @@ Tekan **Enter** untuk mempertahankan nilai yang sudah ada.
 5. Verifikasi di Moodle Master:
    Login Moodle master → Kursus → Nilai
    Pastikan nilai siswa sudah masuk ke gradebook
+6. (Opsional) Lakukan backup data server kelas
+```
+
+### Backup Data Setelah Ujian
+
+Sangat disarankan melakukan backup setelah setiap ujian sebagai cadangan data:
+
+```bash
+cd moodle-sync-app/docker/
+./backup.sh
+```
+
+Hasil backup tersimpan di `docker/backups/YYYY-MM-DD_HH-MM/` berisi:
+- Database lengkap (nilai, attempt siswa)
+- File upload (gambar soal)
+- Konfigurasi koneksi
+
+**Untuk memindahkan data ke server lain:**
+```bash
+# 1. Backup di komputer lama
+cd docker/ && ./backup.sh
+
+# 2. Copy folder backup ke USB/cloud/jaringan
+
+# 3. Di komputer baru (setelah git clone):
+cd docker/ && ./clone-to-new-server.sh ./backups/2026-03-05_11-02
 ```
 
 ---
