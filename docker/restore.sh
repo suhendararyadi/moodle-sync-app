@@ -15,7 +15,7 @@ DB_CONTAINER="eujian-db"
 MOODLE_CONTAINER="eujian-moodle"
 DB_NAME="moodle"
 DB_USER="moodle"
-DB_PASS="moodle"
+DB_PASS="moodlepassword"
 
 # ── Warna output ─────────────────────────────────────────────
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'

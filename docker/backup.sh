@@ -14,7 +14,7 @@ DB_CONTAINER="eujian-db"
 MOODLE_CONTAINER="eujian-moodle"
 DB_NAME="moodle"
 DB_USER="moodle"
-DB_PASS="moodle"
+DB_PASS="moodlepassword"
 
 BACKUP_BASE="${1:-$(dirname "$0")/backups}"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
