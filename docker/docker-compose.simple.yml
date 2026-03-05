@@ -1,0 +1,19 @@
+version: '3.8'
+
+# Versi sederhana: hanya Web App
+# Gunakan jika Moodle sudah berjalan terpisah (Laragon/existing server)
+
+services:
+  sync-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: eujian-sync
+    restart: unless-stopped
+    volumes:
+      - ../webapps/eujian-sync:/var/www/html/eujian-sync
+    ports:
+      - "8081:80"
+    extra_hosts:
+      # Agar sync-app bisa akses Moodle di host machine (jika Moodle di Laragon/localhost)
+      - "host.docker.internal:host-gateway"

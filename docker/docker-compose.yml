@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # ─── Database ────────────────────────────────────────────
+  db:
+    image: mariadb:10.11
+    container_name: eujian-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: moodle_root
+      MYSQL_DATABASE: moodle
+      MYSQL_USER: moodle
+      MYSQL_PASSWORD: moodle
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - eujian-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Moodle ──────────────────────────────────────────────
+  moodle:
+    image: bitnami/moodle:4.3
+    container_name: eujian-moodle
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MOODLE_DATABASE_HOST: db
+      MOODLE_DATABASE_PORT_NUMBER: 3306
+      MOODLE_DATABASE_NAME: moodle
+      MOODLE_DATABASE_USER: moodle
+      MOODLE_DATABASE_PASSWORD: moodle
+      MOODLE_USERNAME: admin
+      MOODLE_PASSWORD: Admin1234!
+      MOODLE_EMAIL: admin@eujian.local
+      MOODLE_SITE_NAME: "E-UJIAN Lokal"
+      MOODLE_SKIP_INSTALL: "no"
+      MOODLE_LANG: id
+    volumes:
+      - moodle_data:/bitnami/moodle
+      - moodle_moodledata:/bitnami/moodledata
+    ports:
+      - "8080:8080"
+    networks:
+      - eujian-net
+
+  # ─── E-UJIAN Sync Web App ─────────────────────────────────
+  sync-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: eujian-sync
+    restart: unless-stopped
+    volumes:
+      - ../webapps/eujian-sync:/var/www/html/eujian-sync
+    ports:
+      - "8081:80"
+    networks:
+      - eujian-net
+
+volumes:
+  db_data:
+  moodle_data:
+  moodle_moodledata:
+
+networks:
+  eujian-net:
+    driver: bridge
