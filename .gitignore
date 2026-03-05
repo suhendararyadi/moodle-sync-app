@@ -14,5 +14,8 @@ webapps/eujian-sync/config.json
 # Installer binary components (laragon, moodle installer - too large)
 installer/components/
 
+# Backup hasil script backup.sh (berisi data nyata)
+docker/backups/
+
 # macOS
 .DS_Store
